@@ -1,0 +1,27 @@
+# MySQL/MariaDB 测试配置
+mysql:
+  host: "47.119.182.61"
+  port: 15640
+  user: "mariadb"
+  password: "b5v8n2z0q1"
+  database: "db_chamo"  # 连接到已存在的数据库
+  root_user: "root"     # 用于创建测试数据库
+  root_password: "k3m7c1x9p4"
+
+# Redis 测试配置  
+redis:
+  host: "47.119.182.61"
+  port: 15620
+  password: "g7z4n1v0b6"
+  database: 0
+
+# Pulsar 测试配置
+pulsar:
+  admin_url: "http://47.119.182.61:15681"
+  tenant: "test-tenant"
+  namespace: "test-namespace"
+  username: ""  # Pulsar standalone 通常不需要认证
+  password: ""
+
+# MCP 二进制文件路径
+mcp_binary: "/home/chc/go/bin/mcp/mcp"

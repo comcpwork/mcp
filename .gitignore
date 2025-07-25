@@ -1,0 +1,133 @@
+# ========== Go 相关 ==========
+# 二进制文件
+# 只忽略根目录下的 mcp 二进制文件
+/mcp
+!/cmd/mcp/
+/bin/
+/dist/
+~/go/bin/mcp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go构建缓存
+/vendor/
+go.work
+go.work.sum
+
+# ========== Python 相关 ==========
+# Python 编译文件
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.pyc
+*.pyo
+*.pyd
+
+# Python 虚拟环境
+venv/
+env/
+.venv/
+.env/
+test_env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python 测试
+.pytest_cache/
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.txt
+coverage.out
+coverage.xml
+*.cover
+*.prof
+.hypothesis/
+
+# Python 包管理
+*.egg-info/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+dist/
+build/
+*.egg
+MANIFEST
+
+# ========== 配置文件 ==========
+# 保留示例文件
+*.yaml
+!*.yaml.example
+!messages.yaml
+*.yml
+!*.yml.example
+*.json
+!*.json.example
+
+# 测试配置文件（包含敏感信息）
+test/config.yaml
+config.yaml
+
+# ========== IDE 和编辑器 ==========
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+.ropeproject
+
+# ========== 系统文件 ==========
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ========== 日志和临时文件 ==========
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+.cache/
+
+# ========== 工具和依赖 ==========
+# Node.js (如果有前端部分)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 下载的安装脚本
+get-pip.py
+get-docker.sh
+
+# ========== 项目特定 ==========
+# MCP 日志目录
+~/.co-mcp/logs/
+
+# 临时测试数据库
+test_mcp_*
+
+# 临时克隆的仓库
+temp_*/
+tmp_*/
