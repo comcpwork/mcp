@@ -95,6 +95,7 @@ uninstall-system:
 clean:
 	@echo "清理构建文件..."
 	@rm -rf $(BUILD_DIR)
+	@rm -rf dist/
 	@rm -f ./mcp
 	@echo "✓ 清理完成"
 
@@ -114,12 +115,33 @@ test-mcp: build
 .PHONY: build-all
 build-all:
 	@echo "交叉编译所有平台..."
-	@mkdir -p $(BUILD_DIR)
-	@GOOS=linux GOARCH=amd64 $(GO) build $(GOFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-linux-amd64 ./cmd/mcp
-	@GOOS=darwin GOARCH=amd64 $(GO) build $(GOFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-amd64 ./cmd/mcp
-	@GOOS=darwin GOARCH=arm64 $(GO) build $(GOFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-arm64 ./cmd/mcp
-	@GOOS=windows GOARCH=amd64 $(GO) build $(GOFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-windows-amd64.exe ./cmd/mcp
+	@mkdir -p dist
+	@GOOS=linux GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-linux-amd64 ./cmd/mcp
+	@GOOS=linux GOARCH=arm64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-linux-arm64 ./cmd/mcp
+	@GOOS=darwin GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-darwin-amd64 ./cmd/mcp
+	@GOOS=darwin GOARCH=arm64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-darwin-arm64 ./cmd/mcp
+	@GOOS=windows GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-windows-amd64.exe ./cmd/mcp
 	@echo "✓ 交叉编译完成"
+	@ls -lh dist/
+
+# 创建发布包
+.PHONY: release
+release: build-all
+	@echo "创建发布包..."
+	@mkdir -p release
+	@VERSION=$${VERSION:-latest}; \
+	cd $(BUILD_DIR) && \
+	for file in mcp-*; do \
+		echo "打包 $$file..."; \
+		if [[ "$$file" == *.exe ]]; then \
+			zip ../release/$$file-$$VERSION.zip $$file ../LICENSE ../README.md; \
+		else \
+			tar -czf ../release/$$file-$$VERSION.tar.gz $$file ../LICENSE ../README.md; \
+		fi; \
+	done
+	@cd release && sha256sum * > checksums.txt
+	@echo "✓ 发布包创建完成，文件位于 release/ 目录"
+	@ls -lh release/
 
 # 开发模式（构建并运行）
 .PHONY: dev

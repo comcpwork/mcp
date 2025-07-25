@@ -6,9 +6,23 @@
 
 ## 快速开始
 
+### 方式一：下载预编译二进制文件
+
+从 [GitHub Releases](https://github.com/comcpwork/mcp/releases) 下载最新版本
+
 ```bash
-# 安装
-git clone https://github.com/yourname/mcp.git
+# Linux/macOS
+chmod +x mcp-*
+sudo mv mcp-* /usr/local/bin/mcp
+
+# 验证
+mcp --version
+```
+
+### 方式二：从源码构建
+
+```bash
+git clone https://github.com/comcpwork/mcp.git
 cd mcp
 make install
 
