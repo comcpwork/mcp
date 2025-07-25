@@ -6,7 +6,19 @@ Manage MySQL, Redis, and Pulsar through natural language conversations with AI a
 
 ## Quick Start
 
-### Option 1: Download Pre-built Binary
+### Option 1: One-line Install (Recommended)
+
+**Linux/macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/comcpwork/mcp/main/scripts/install.sh | bash
+```
+
+**Windows (PowerShell as Administrator):**
+```powershell
+iwr -useb https://raw.githubusercontent.com/comcpwork/mcp/main/scripts/install.ps1 | iex
+```
+
+### Option 2: Manual Download
 
 Download the latest release from [GitHub Releases](https://github.com/comcpwork/mcp/releases)
 
@@ -19,7 +31,7 @@ sudo mv mcp-* /usr/local/bin/mcp
 mcp --version
 ```
 
-### Option 2: Build from Source
+### Option 3: Build from Source
 
 ```bash
 git clone https://github.com/comcpwork/mcp.git
