@@ -6,7 +6,19 @@
 
 ## 快速开始
 
-### 方式一：下载预编译二进制文件
+### 方式一：一键安装（推荐）
+
+**Linux/macOS：**
+```bash
+curl -fsSL https://raw.githubusercontent.com/comcpwork/mcp/main/scripts/install.sh | bash
+```
+
+**Windows（以管理员身份运行 PowerShell）：**
+```powershell
+iwr -useb https://raw.githubusercontent.com/comcpwork/mcp/main/scripts/install.ps1 | iex
+```
+
+### 方式二：手动下载
 
 从 [GitHub Releases](https://github.com/comcpwork/mcp/releases) 下载最新版本
 
@@ -19,7 +31,7 @@ sudo mv mcp-* /usr/local/bin/mcp
 mcp --version
 ```
 
-### 方式二：从源码构建
+### 方式三：从源码构建
 
 ```bash
 git clone https://github.com/comcpwork/mcp.git
