@@ -284,12 +284,8 @@ func (s *RedisServer) formatRedisResult(command string, result interface{}, full
 		if v == "" {
 			output.WriteString("Result: (empty string)\n")
 		} else {
-			// 截断过长的字符串
-			if len(v) > 200 {
-				output.WriteString(fmt.Sprintf("Result: %s... (truncated, %d chars total)\n", v[:197], len(v)))
-			} else {
-				output.WriteString(fmt.Sprintf("Result: %s\n", v))
-			}
+			// 不截断字符串，显示完整内容
+			output.WriteString(fmt.Sprintf("Result: %s\n", v))
 		}
 		
 	case int64:
@@ -308,9 +304,6 @@ func (s *RedisServer) formatRedisResult(command string, result interface{}, full
 			
 			for i := 0; i < maxShow; i++ {
 				item := fmt.Sprintf("%v", v[i])
-				if len(item) > 50 {
-					item = item[:47] + "..."
-				}
 				output.WriteString(fmt.Sprintf("  [%d] %s\n", i, item))
 			}
 			
@@ -332,10 +325,7 @@ func (s *RedisServer) formatRedisResult(command string, result interface{}, full
 					break
 				}
 				
-				// 截断过长的值
-				if len(val) > 50 {
-					val = val[:47] + "..."
-				}
+				// 不截断值，显示完整内容
 				output.WriteString(fmt.Sprintf("  %s: %s\n", key, val))
 				count++
 			}
@@ -344,11 +334,7 @@ func (s *RedisServer) formatRedisResult(command string, result interface{}, full
 	default:
 		// 通用格式化
 		resultStr := fmt.Sprintf("%v", v)
-		if len(resultStr) > 200 {
-			output.WriteString(fmt.Sprintf("Result: %s... (truncated)\n", resultStr[:197]))
-		} else {
-			output.WriteString(fmt.Sprintf("Result: %s\n", resultStr))
-		}
+		output.WriteString(fmt.Sprintf("Result: %s\n", resultStr))
 	}
 	
 	return output.String()
