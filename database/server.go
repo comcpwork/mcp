@@ -9,7 +9,7 @@ import (
 func NewServer() *mcpserver.MCPServer {
 	server := mcpserver.NewMCPServer(
 		"Database MCP Server",
-		"1.0.3",
+		"1.0.4",
 		mcpserver.WithToolCapabilities(true),
 	)
 
@@ -92,6 +92,33 @@ func NewServer() *mcpserver.MCPServer {
 			),
 		),
 		handleClickHouseExec,
+	)
+
+	// 注册 SQLite 工具
+	server.AddTool(
+		mcp.NewTool("sqlite_exec",
+			mcp.WithDescription(
+				"Execute SQLite SQL statements using SQLite driver DSN. "+
+					"Supports SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, etc. "+
+					"Note: If no LIMIT is specified in your SELECT query, all matching rows will be returned.",
+			),
+			mcp.WithString("dsn",
+				mcp.Required(),
+				mcp.Description(
+					"SQLite database file path or :memory: for in-memory database. "+
+						"Format: /path/to/database.db or :memory:. "+
+						"Example: /Users/<username>/data/mydb.db or :memory:",
+				),
+			),
+			mcp.WithString("sql",
+				mcp.Required(),
+				mcp.Description(
+					"SQL statement to execute. "+
+						"For SELECT queries without LIMIT clause, all rows will be returned.",
+				),
+			),
+		),
+		handleSQLiteExec,
 	)
 
 	return server

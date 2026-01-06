@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_CN.md)
 
-Execute MySQL, Redis and ClickHouse commands through natural language conversations with AI assistants.
+Execute MySQL, Redis, ClickHouse and SQLite commands through natural language conversations with AI assistants.
 
 ## Installation
 
@@ -57,6 +57,7 @@ Restart your MCP client to load the database tools.
 Ask your AI assistant:
 - "Execute MySQL with DSN root:password@tcp(localhost:3306)/test and SQL: SELECT 1"
 - "Execute Redis command PING on redis://localhost:6379/0"
+- "Execute SQLite with DSN :memory: and SQL: SELECT 1"
 
 ## License
 

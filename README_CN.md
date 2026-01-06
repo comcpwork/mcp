@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_CN.md)
 
-通过与 AI 助手的自然语言对话执行 MySQL、Redis 和 ClickHouse 命令。
+通过与 AI 助手的自然语言对话执行 MySQL、Redis、ClickHouse 和 SQLite 命令。
 
 ## 安装
 
@@ -57,6 +57,7 @@ claude mcp add database -- mcp database
 向你的 AI 助手提问：
 - "使用 DSN root:password@tcp(localhost:3306)/test 执行 MySQL: SELECT 1"
 - "在 redis://localhost:6379/0 上执行 Redis 命令 PING"
+- "使用 DSN :memory: 执行 SQLite: SELECT 1"
 
 ## 许可证
 
