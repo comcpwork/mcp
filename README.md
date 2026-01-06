@@ -4,6 +4,13 @@
 
 Execute MySQL, Redis, ClickHouse and SQLite commands through natural language conversations with AI assistants.
 
+## Features
+
+- **MySQL** - Execute SQL queries and modifications
+- **Redis** - Execute Redis commands
+- **ClickHouse** - Execute ClickHouse SQL statements
+- **SQLite** - Execute SQLite SQL (file-based or in-memory)
+
 ## Installation
 
 ### Requirements
@@ -52,12 +59,31 @@ Configuration file locations:
 
 Restart your MCP client to load the database tools.
 
-### Verification
+## Quick Start
 
 Ask your AI assistant:
-- "Execute MySQL with DSN root:password@tcp(localhost:3306)/test and SQL: SELECT 1"
-- "Execute Redis command PING on redis://localhost:6379/0"
-- "Execute SQLite with DSN :memory: and SQL: SELECT 1"
+
+- **MySQL:** "Execute MySQL with DSN `root:password@tcp(localhost:3306)/test` and SQL: `SELECT * FROM users`"
+- **Redis:** "Execute Redis command `PING` on `redis://localhost:6379/0`"
+- **ClickHouse:** "Execute ClickHouse with DSN `clickhouse://default:@localhost:9000/default` and SQL: `SELECT 1`"
+- **SQLite:** "Execute SQLite with DSN `:memory:` and SQL: `SELECT 1`"
+
+## DSN Formats
+
+| Database | Format | Example |
+|----------|--------|---------|
+| MySQL | `user:pass@tcp(host:port)/dbname` | `root:password@tcp(localhost:3306)/mydb` |
+| Redis | `redis://[:password@]host:port/db` | `redis://localhost:6379/0` |
+| ClickHouse | `clickhouse://user:pass@host:port/db` | `clickhouse://default:@localhost:9000/default` |
+| SQLite | `/path/to/file.db` or `:memory:` | `/data/mydb.db` or `:memory:` |
+
+## Documentation
+
+- [Installation Guide](docs/en/installation.md)
+- [MySQL Guide](docs/en/mysql.md)
+- [Redis Guide](docs/en/redis.md)
+- [ClickHouse Guide](docs/en/clickhouse.md)
+- [SQLite Guide](docs/en/sqlite.md)
 
 ## License
 

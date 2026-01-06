@@ -2,80 +2,115 @@
 
 ## Requirements
 
-- Go 1.19 or higher
-- Git
+- Go 1.21 or higher
+- MCP Client (Claude Code, Cursor, Cline, etc.)
 
-## Installation Methods
+## Installation
 
-### Method 1: From Source (Recommended)
+### Quick Install
 
 ```bash
-# Clone repository
-git clone https://github.com/yourname/mcp.git
-cd mcp
-
-# Build and install
-make install
-
-# Verify installation
-mcp --version
+go install github.com/comcpwork/mcp/cmd/mcp@latest
 ```
 
-### Method 2: System-wide Installation
+### Verify Installation
 
 ```bash
-# Requires sudo
-make install-system
+mcp --version
 ```
 
 ## Configuration
 
+### Claude Code
+
+Add the MCP server directly:
+
+```bash
+claude mcp add database -- mcp database
+```
+
 ### Claude Desktop (macOS/Windows)
 
 Edit configuration file:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
-    "mysql": {
-      "command": "~/.local/bin/mcp",
-      "args": ["mysql"]
-    },
-    "redis": {
-      "command": "~/.local/bin/mcp",
-      "args": ["redis"]
-    },
-    "pulsar": {
-      "command": "~/.local/bin/mcp",
-      "args": ["pulsar"]
+    "database": {
+      "command": "mcp",
+      "args": ["database"]
     }
   }
 }
 ```
 
-### Other AI Assistants
+### Cursor
 
-Refer to your AI assistant's MCP configuration documentation.
+Go to **Settings > Features > MCP Servers** and add:
+
+```json
+{
+  "database": {
+    "command": "mcp",
+    "args": ["database"]
+  }
+}
+```
+
+### Cline (VS Code)
+
+Edit `.vscode/mcp.json` or VS Code settings:
+
+```json
+{
+  "mcpServers": {
+    "database": {
+      "command": "mcp",
+      "args": ["database"]
+    }
+  }
+}
+```
+
+## Available Tools
+
+After configuration, the following MCP tools will be available:
+
+| Tool | Description |
+|------|-------------|
+| `mysql_exec` | Execute MySQL SQL statements |
+| `redis_exec` | Execute Redis commands |
+| `clickhouse_exec` | Execute ClickHouse SQL statements |
+| `sqlite_exec` | Execute SQLite SQL statements |
 
 ## Troubleshooting
 
 ### Command not found
 
-Add to your PATH:
+Ensure Go bin directory is in your PATH:
+
 ```bash
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"
 ```
+
+Add this line to your `~/.bashrc` or `~/.zshrc` for persistence.
 
 ### Permission denied
 
 ```bash
-chmod +x ~/.local/bin/mcp
+chmod +x ~/go/bin/mcp
 ```
+
+### MCP client not detecting tools
+
+1. Restart your MCP client after configuration
+2. Verify the `mcp` command is accessible from the client's environment
+3. Check the configuration file syntax (valid JSON)
 
 ## Uninstall
 
 ```bash
-make uninstall
+rm ~/go/bin/mcp
 ```

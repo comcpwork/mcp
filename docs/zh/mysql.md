@@ -1,65 +1,87 @@
 # MySQL 使用指南
 
-## 开始使用
+## MCP 工具
 
-### 连接到 MySQL
+**工具名称:** `mysql_exec`
 
-告诉 Claude：
-- "连接到 192.168.1.100:3306 的 MySQL，用户名 root，密码 mypass"
-- "连接到本地的 MySQL 数据库"
+## DSN 格式
 
-### 基本操作
-
-#### 查看表
-- "显示所有表"
-- "列出数据库中的表"
-
-#### 查询数据
-- "查询 users 表"
-- "显示 orders 表的前 10 条记录"
-- "查找今天注册的用户"
-
-#### 修改数据
-- "插入新用户张三，邮箱 zhangsan@example.com"
-- "将 ID 为 123 的用户状态更新为活跃"
-- "删除 logs 表中 30 天前的记录"
-
-## 高级功能
-
-### 表信息
-- "描述 users 表的结构"
-- "显示 products 表的索引"
-- "查看表的大小和行数"
-
-### 数据库管理
-- "创建一个名为 test_db 的新数据库"
-- "显示所有数据库"
-- "切换到 production 数据库"
-
-### 复杂查询
-- "显示最近 6 个月的月度销售汇总"
-- "查找 users 表中的重复邮箱地址"
-- "关联 orders 和 customers 表，显示最近的购买记录"
-
-## 安全选项
-
-启动 MCP 服务器时，可以添加安全标志：
-
-```bash
-mcp mysql --disable-drop --disable-truncate
+```
+username:password@tcp(host:port)/dbname?charset=utf8mb4&parseTime=true
 ```
 
-可用标志：
-- `--disable-create` - 禁止 CREATE 操作
-- `--disable-drop` - 禁止 DROP 操作
-- `--disable-alter` - 禁止 ALTER 操作
-- `--disable-truncate` - 禁止 TRUNCATE 操作
-- `--disable-update` - 禁止 UPDATE 操作
-- `--disable-delete` - 禁止 DELETE 操作
+### 示例
+
+| 场景 | DSN |
+|------|-----|
+| 本地数据库 | `root:password@tcp(localhost:3306)/mydb` |
+| 远程服务器 | `admin:pass123@tcp(192.168.1.100:3306)/production` |
+| 指定字符集 | `root:pass@tcp(localhost:3306)/mydb?charset=utf8mb4` |
+| 解析时间 | `root:pass@tcp(localhost:3306)/mydb?parseTime=true` |
+
+## 使用示例
+
+### 查询操作
+
+向你的 AI 助手提问：
+
+- "使用 DSN `root:password@tcp(localhost:3306)/mydb` 执行 MySQL: `SHOW TABLES`"
+- "使用 DSN `root:password@tcp(localhost:3306)/mydb` 执行 MySQL: `SELECT * FROM users LIMIT 10`"
+- "使用 DSN `root:password@tcp(localhost:3306)/mydb` 执行 MySQL: `DESCRIBE users`"
+
+### 修改操作
+
+- "使用 DSN `root:password@tcp(localhost:3306)/mydb` 执行 MySQL: `INSERT INTO users (name, email) VALUES ('张三', 'zhangsan@example.com')`"
+- "使用 DSN `root:password@tcp(localhost:3306)/mydb` 执行 MySQL: `UPDATE users SET status = 'active' WHERE id = 123`"
+- "使用 DSN `root:password@tcp(localhost:3306)/mydb` 执行 MySQL: `DELETE FROM logs WHERE created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)`"
+
+## 支持的操作
+
+### 查询语句
+- `SELECT` - 查询数据
+- `SHOW` - 显示数据库对象
+- `DESCRIBE` / `DESC` - 描述表结构
+- `EXPLAIN` - 解释查询计划
+
+### 修改语句
+- `INSERT` - 插入数据
+- `UPDATE` - 更新数据
+- `DELETE` - 删除数据
+- `CREATE` - 创建数据库/表
+- `DROP` - 删除数据库/表
+- `ALTER` - 修改表结构
+- `TRUNCATE` - 清空表
+
+## 输出格式
+
+### 查询结果
+
+**≤5 列:** 表格格式
+```
+ID    Name    Email
+----  ------  -----------------
+1     张三    zhangsan@example.com
+2     李四    lisi@example.com
+```
+
+**>5 列:** 键值对格式
+```
+Row 1:
+  id: 1
+  name: 张三
+  email: zhangsan@example.com
+  ...
+```
+
+### 修改结果
+
+```
+Query OK, 1 row affected
+Last Insert ID: 42
+```
 
 ## 使用技巧
 
-1. **自然语言**：用自然语言描述你想要的操作
-2. **上下文**：Claude 会在对话中记住你的数据库上下文
-3. **安全性**：危险操作会要求确认
-4. **历史记录**：使用"显示连接历史"查看之前的连接
+1. **DSN 安全**: 不要在日志或共享环境中暴露包含敏感凭据的 DSN
+2. **LIMIT 子句**: 对大表使用 `LIMIT` 控制结果集大小
+3. **自然语言**: 你可以用自然语言描述需求，AI 会构建适当的 SQL

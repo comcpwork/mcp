@@ -1,56 +1,122 @@
 # Redis 使用指南
 
-## 开始使用
+## MCP 工具
 
-### 连接到 Redis
+**工具名称:** `redis_exec`
 
-告诉 Claude：
-- "连接到 localhost:6379 的 Redis，密码是 redis123"
-- "连接到本地的 Redis 服务器"
+## DSN 格式
 
-### 基本操作
+```
+redis://[:password@]host:port/database
+```
 
-#### 键操作
-- "设置键 user:1001 的值为张三"
-- "获取键 user:1001 的值"
-- "删除键 session:abc123"
-- "检查键是否存在"
+### 示例
 
-#### 列表操作
-- "向 shopping_cart 列表添加商品"
-- "获取 todo_list 的所有项目"
-- "从队列中移除第一个元素"
+| 场景 | DSN |
+|------|-----|
+| 本地无密码 | `redis://localhost:6379/0` |
+| 带密码 | `redis://:mypassword@localhost:6379/0` |
+| 远程服务器 | `redis://:pass123@192.168.1.100:6379/1` |
+| 带用户名 | `redis://user:password@localhost:6379/0` |
 
-#### 哈希操作
-- "设置 user:1001 的 name 为张三，age 为 30"
-- "获取 user:1001 哈希的所有字段"
-- "更新 user:1001 的 email 字段"
+## 使用示例
 
-#### 集合操作
-- "将 user123 添加到 online_users 集合"
-- "检查 user123 是否在 online_users 中"
-- "获取 admin_users 集合的所有成员"
+### 字符串操作
 
-## 高级功能
+向你的 AI 助手提问：
 
-### 键模式匹配
-- "查找所有以 session: 开头的键"
-- "统计匹配 user:* 的键数量"
-- "删除所有匹配 temp:* 模式的键"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `PING`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `SET user:1001 张三`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `GET user:1001`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `DEL session:abc123`"
 
-### 过期时间
-- "设置键并设定 1 小时过期"
-- "检查会话键的 TTL"
-- "移除键的过期时间"
+### 列表操作
 
-### 批量操作
-- "获取多个键：key1、key2、key3"
-- "删除键：temp1、temp2、temp3"
-- "设置多个键值对"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `LPUSH queue task1`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `LRANGE todo_list 0 -1`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `RPOP queue`"
+
+### 哈希操作
+
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `HSET user:1001 name 张三 age 30`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `HGETALL user:1001`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `HGET user:1001 name`"
+
+### 集合操作
+
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `SADD online_users user123`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `SMEMBERS online_users`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `SISMEMBER online_users user123`"
+
+### 键管理
+
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `KEYS user:*`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `TTL session:abc123`"
+- "在 `redis://localhost:6379/0` 上执行 Redis 命令 `EXPIRE session:abc123 3600`"
+
+## 输出格式
+
+### 字符串值
+
+```
+"张三"
+```
+
+### 整数值
+
+```
+(integer) 1
+```
+
+### 空值
+
+```
+(nil)
+```
+
+### 数组值
+
+```
+(3 items)
+1) "item1"
+2) "item2"
+3) "item3"
+```
+
+### 哈希值
+
+```
+(4 fields)
+name: 张三
+age: 30
+email: zhangsan@example.com
+status: active
+```
+
+## 常用命令
+
+| 命令 | 描述 | 示例 |
+|------|------|------|
+| `PING` | 测试连接 | `PING` |
+| `SET` | 设置字符串值 | `SET key value` |
+| `GET` | 获取字符串值 | `GET key` |
+| `DEL` | 删除键 | `DEL key1 key2` |
+| `EXISTS` | 检查键是否存在 | `EXISTS key` |
+| `KEYS` | 按模式查找键 | `KEYS user:*` |
+| `TTL` | 获取过期时间 | `TTL key` |
+| `EXPIRE` | 设置过期时间 | `EXPIRE key seconds` |
+| `HSET` | 设置哈希字段 | `HSET hash field value` |
+| `HGET` | 获取哈希字段 | `HGET hash field` |
+| `HGETALL` | 获取所有哈希字段 | `HGETALL hash` |
+| `LPUSH` | 从头部推入列表 | `LPUSH list value` |
+| `RPUSH` | 从尾部推入列表 | `RPUSH list value` |
+| `LRANGE` | 获取列表范围 | `LRANGE list 0 -1` |
+| `SADD` | 添加到集合 | `SADD set member` |
+| `SMEMBERS` | 获取集合所有成员 | `SMEMBERS set` |
 
 ## 使用技巧
 
-1. **数据类型**：Redis 支持字符串、列表、集合、哈希等
-2. **过期时间**：使用 TTL 管理会话
-3. **模式匹配**：在生产环境谨慎使用通配符
-4. **管道操作**：可以一起执行多个命令
+1. **数据库选择**: Redis 有 16 个数据库（0-15），在 DSN 路径中指定
+2. **键模式匹配**: 生产环境谨慎使用 `KEYS pattern`（会阻塞服务器）
+3. **TTL 管理**: 使用 `EXPIRE` 管理会话/缓存
+4. **数据类型**: 根据使用场景选择合适的数据结构

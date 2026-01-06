@@ -4,6 +4,13 @@
 
 通过与 AI 助手的自然语言对话执行 MySQL、Redis、ClickHouse 和 SQLite 命令。
 
+## 功能特性
+
+- **MySQL** - 执行 SQL 查询和修改操作
+- **Redis** - 执行 Redis 命令
+- **ClickHouse** - 执行 ClickHouse SQL 语句
+- **SQLite** - 执行 SQLite SQL（文件数据库或内存数据库）
+
 ## 安装
 
 ### 系统要求
@@ -52,12 +59,31 @@ claude mcp add database -- mcp database
 
 重启你的 MCP 客户端以加载数据库工具。
 
-### 验证
+## 快速开始
 
 向你的 AI 助手提问：
-- "使用 DSN root:password@tcp(localhost:3306)/test 执行 MySQL: SELECT 1"
-- "在 redis://localhost:6379/0 上执行 Redis 命令 PING"
-- "使用 DSN :memory: 执行 SQLite: SELECT 1"
+
+- **MySQL:** "使用 DSN `root:password@tcp(localhost:3306)/test` 执行 MySQL: `SELECT * FROM users`"
+- **Redis:** "在 `redis://localhost:6379/0` 上执行 Redis 命令 `PING`"
+- **ClickHouse:** "使用 DSN `clickhouse://default:@localhost:9000/default` 执行 ClickHouse: `SELECT 1`"
+- **SQLite:** "使用 DSN `:memory:` 执行 SQLite: `SELECT 1`"
+
+## DSN 格式
+
+| 数据库 | 格式 | 示例 |
+|--------|------|------|
+| MySQL | `user:pass@tcp(host:port)/dbname` | `root:password@tcp(localhost:3306)/mydb` |
+| Redis | `redis://[:password@]host:port/db` | `redis://localhost:6379/0` |
+| ClickHouse | `clickhouse://user:pass@host:port/db` | `clickhouse://default:@localhost:9000/default` |
+| SQLite | `/path/to/file.db` 或 `:memory:` | `/data/mydb.db` 或 `:memory:` |
+
+## 文档
+
+- [安装指南](docs/zh/installation.md)
+- [MySQL 指南](docs/zh/mysql.md)
+- [Redis 指南](docs/zh/redis.md)
+- [ClickHouse 指南](docs/zh/clickhouse.md)
+- [SQLite 指南](docs/zh/sqlite.md)
 
 ## 许可证
 
