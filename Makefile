@@ -2,7 +2,7 @@
 
 # 变量定义
 BINARY_NAME=cowork-database
-BUILD_DIR=$(HOME)/go/bin/cowork-database
+BUILD_DIR=$(HOME)/go/bin
 INSTALL_DIR_USER=$(HOME)/.local/bin
 INSTALL_DIR_SYSTEM=/usr/local/bin
 GO=go
@@ -94,9 +94,9 @@ uninstall-system:
 .PHONY: clean
 clean:
 	@echo "清理构建文件..."
-	@rm -rf $(BUILD_DIR)
+	@rm -f $(BUILD_DIR)/$(BINARY_NAME)
 	@rm -rf dist/
-	@rm -f ./mcp
+	@rm -f ./cowork-database
 	@echo "✓ 清理完成"
 
 # 运行测试
