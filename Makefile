@@ -1,8 +1,8 @@
 # MCP 项目 Makefile
 
 # 变量定义
-BINARY_NAME=mcp
-BUILD_DIR=$(HOME)/go/bin/mcp
+BINARY_NAME=cowork-database
+BUILD_DIR=$(HOME)/go/bin/cowork-database
 INSTALL_DIR_USER=$(HOME)/.local/bin
 INSTALL_DIR_SYSTEM=/usr/local/bin
 GO=go
@@ -21,7 +21,7 @@ all: build
 build:
 	@echo "构建 $(BINARY_NAME)..."
 	@mkdir -p $(BUILD_DIR)
-	@$(GO) build $(GOFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/mcp
+	@$(GO) build $(GOFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/cowork-database
 	@echo "✓ 构建完成: $(BUILD_DIR)/$(BINARY_NAME)"
 
 # 开发构建（带调试信息）
@@ -29,7 +29,7 @@ build:
 build-dev:
 	@echo "构建开发版本..."
 	@mkdir -p $(BUILD_DIR)
-	@$(GO) build -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/mcp
+	@$(GO) build -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/cowork-database
 	@echo "✓ 开发版本构建完成: $(BUILD_DIR)/$(BINARY_NAME)"
 
 # 安装到用户目录
@@ -116,11 +116,11 @@ test-mcp: build
 build-all:
 	@echo "交叉编译所有平台..."
 	@mkdir -p dist
-	@GOOS=linux GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-linux-amd64 ./cmd/mcp
-	@GOOS=linux GOARCH=arm64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-linux-arm64 ./cmd/mcp
-	@GOOS=darwin GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-darwin-amd64 ./cmd/mcp
-	@GOOS=darwin GOARCH=arm64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-darwin-arm64 ./cmd/mcp
-	@GOOS=windows GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-windows-amd64.exe ./cmd/mcp
+	@GOOS=linux GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-linux-amd64 ./cmd/cowork-database
+	@GOOS=linux GOARCH=arm64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-linux-arm64 ./cmd/cowork-database
+	@GOOS=darwin GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-darwin-amd64 ./cmd/cowork-database
+	@GOOS=darwin GOARCH=arm64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-darwin-arm64 ./cmd/cowork-database
+	@GOOS=windows GOARCH=amd64 $(GO) build $(GOFLAGS) -o dist/$(BINARY_NAME)-windows-amd64.exe ./cmd/cowork-database
 	@echo "✓ 交叉编译完成"
 	@ls -lh dist/
 

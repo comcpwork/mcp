@@ -1,11 +1,11 @@
 # ========== Go 相关 ==========
 # 二进制文件
-# 只忽略根目录下的 mcp 二进制文件
-/mcp
-!/cmd/mcp/
+# 只忽略根目录下的二进制文件
+/cowork-database
+!/cmd/cowork-database/
 /bin/
 /dist/
-~/go/bin/mcp/
+~/go/bin/cowork-database/
 *.exe
 *.exe~
 *.dll

@@ -138,6 +138,43 @@ CREATE TABLE orders (
 );
 ```
 
+## SSH Remote Execution
+
+Unlike other database tools that use TCP tunneling, SQLite uses **remote command execution** mode when SSH is enabled. This means:
+
+- The `sqlite3` command-line tool must be installed on the remote server
+- Commands are executed directly on the remote server via SSH
+- Output is returned in sqlite3's native format (not formatted by this tool)
+
+### SSH URI Formats
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| Config reference | `ssh://myserver` | Use `~/.ssh/config` entry |
+| Password auth | `ssh://user:pass@host:port` | Direct password authentication |
+| Key auth | `ssh://user@host?key=/path/to/key` | Private key authentication |
+
+### Examples
+
+**Using SSH config:**
+```
+DSN: /data/app.db
+SSH: ssh://myserver
+```
+
+**Using SSH key:**
+```
+DSN: /home/deploy/mydb.db
+SSH: ssh://admin@server.example.com?key=~/.ssh/id_rsa
+```
+
+### Important Notes
+
+1. **Remote sqlite3 required**: The remote server must have `sqlite3` installed
+2. **DSN is remote path**: The DSN should be a path on the remote server
+3. **Output format**: Results are in sqlite3's native format (not the formatted output used in local mode)
+4. **No :memory: support**: In-memory databases cannot be used with SSH
+
 ## Tips
 
 1. **In-Memory vs File**: Use `:memory:` for testing, file path for persistence

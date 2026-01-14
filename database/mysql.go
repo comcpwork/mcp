@@ -24,6 +24,32 @@ func handleMySQLExec(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToo
 		return mcp.NewToolResultError("Missing sql parameter"), nil
 	}
 
+	// 检查是否需要SSH隧道
+	sshURI := req.GetString("ssh", "")
+	var tunnel *SSHTunnel
+	if sshURI != "" {
+		sshConfig, err := ParseSSHURI(sshURI)
+		if err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("Invalid SSH URI: %v", err)), nil
+		}
+
+		// 从DSN中提取目标地址
+		remoteHost, remotePort, err := ExtractMySQLHostPort(dsn)
+		if err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("Failed to parse DSN: %v", err)), nil
+		}
+
+		// 建立SSH隧道
+		tunnel = NewSSHTunnel(sshConfig)
+		if err := tunnel.Start(remoteHost, remotePort); err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("SSH tunnel failed: %v", err)), nil
+		}
+		defer tunnel.Close()
+
+		// 替换DSN中的地址为本地隧道地址
+		dsn = ReplaceMySQLDSNHostPort(dsn, tunnel.LocalAddr())
+	}
+
 	// 打开数据库连接
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

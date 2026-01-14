@@ -11,7 +11,7 @@ NC='\033[0m'
 # 配置
 REPO="comcpwork/mcp"
 INSTALL_DIR="$HOME/.local/bin"
-BINARY_NAME="mcp"
+BINARY_NAME="cowork-database"
 
 # 检测系统信息
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -165,17 +165,9 @@ echo -e "\n添加以下配置："
 cat << EOF
 {
   "mcpServers": {
-    "mysql": {
+    "database": {
       "command": "$INSTALL_DIR/$BINARY_NAME",
-      "args": ["mysql"]
-    },
-    "redis": {
-      "command": "$INSTALL_DIR/$BINARY_NAME",
-      "args": ["redis"]
-    },
-    "pulsar": {
-      "command": "$INSTALL_DIR/$BINARY_NAME",
-      "args": ["pulsar"]
+      "args": ["database"]
     }
   }
 }

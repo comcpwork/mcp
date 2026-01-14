@@ -10,13 +10,13 @@
 ### Quick Install
 
 ```bash
-go install github.com/comcpwork/mcp/cmd/mcp@latest
+go install github.com/comcpwork/mcp/cmd/cowork-database@latest
 ```
 
 ### Verify Installation
 
 ```bash
-mcp --version
+cowork-database --version
 ```
 
 ## Configuration
@@ -26,7 +26,7 @@ mcp --version
 Add the MCP server directly:
 
 ```bash
-claude mcp add database -- mcp database
+claude mcp add database -- cowork-database database
 ```
 
 ### Claude Desktop (macOS/Windows)
@@ -39,7 +39,7 @@ Edit configuration file:
 {
   "mcpServers": {
     "database": {
-      "command": "mcp",
+      "command": "cowork-database",
       "args": ["database"]
     }
   }
@@ -53,7 +53,7 @@ Go to **Settings > Features > MCP Servers** and add:
 ```json
 {
   "database": {
-    "command": "mcp",
+    "command": "cowork-database",
     "args": ["database"]
   }
 }
@@ -67,7 +67,7 @@ Edit `.vscode/mcp.json` or VS Code settings:
 {
   "mcpServers": {
     "database": {
-      "command": "mcp",
+      "command": "cowork-database",
       "args": ["database"]
     }
   }
@@ -100,17 +100,17 @@ Add this line to your `~/.bashrc` or `~/.zshrc` for persistence.
 ### Permission denied
 
 ```bash
-chmod +x ~/go/bin/mcp
+chmod +x ~/go/bin/cowork-database
 ```
 
 ### MCP client not detecting tools
 
 1. Restart your MCP client after configuration
-2. Verify the `mcp` command is accessible from the client's environment
+2. Verify the `cowork-database` command is accessible from the client's environment
 3. Check the configuration file syntax (valid JSON)
 
 ## Uninstall
 
 ```bash
-rm ~/go/bin/mcp
+rm ~/go/bin/cowork-database
 ```

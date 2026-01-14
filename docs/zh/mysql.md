@@ -80,6 +80,41 @@ Query OK, 1 row affected
 Last Insert ID: 42
 ```
 
+## SSH 连接
+
+通过可选的 `ssh` 参数，使用 SSH 跳板机连接 MySQL。
+
+### SSH URI 格式
+
+| 格式 | 示例 | 说明 |
+|------|------|------|
+| 配置引用 | `ssh://myserver` | 使用 `~/.ssh/config` 中的配置 |
+| 密码认证 | `ssh://user:pass@host:port` | 直接密码认证 |
+| 密钥认证 | `ssh://user@host?key=/path/to/key` | 私钥认证 |
+| 加密密钥 | `ssh://user@host?key=/path/to/key&passphrase=xxx` | 加密私钥 |
+
+### 示例
+
+**使用 SSH 配置：**
+```
+DSN: root:password@tcp(10.0.0.100:3306)/mydb
+SSH: ssh://myserver
+```
+
+**使用 SSH 密钥：**
+```
+DSN: root:password@tcp(10.0.0.100:3306)/mydb
+SSH: ssh://admin@jump.example.com?key=~/.ssh/id_rsa
+```
+
+**使用 SSH 密码：**
+```
+DSN: root:password@tcp(10.0.0.100:3306)/mydb
+SSH: ssh://admin:sshpass@jump.example.com:2222
+```
+
+> **注意：** DSN 中的 host:port 应该是从 SSH 服务器可访问的地址（如内网 IP）。
+
 ## 使用技巧
 
 1. **DSN 安全**: 不要在日志或共享环境中暴露包含敏感凭据的 DSN

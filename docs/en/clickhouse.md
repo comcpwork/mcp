@@ -100,6 +100,34 @@ Row 1:
 Query OK, 1 row affected
 ```
 
+## SSH Connection
+
+Connect to ClickHouse through SSH bastion host using the optional `ssh` parameter.
+
+### SSH URI Formats
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| Config reference | `ssh://myserver` | Use `~/.ssh/config` entry |
+| Password auth | `ssh://user:pass@host:port` | Direct password authentication |
+| Key auth | `ssh://user@host?key=/path/to/key` | Private key authentication |
+
+### Examples
+
+**Using SSH config:**
+```
+DSN: clickhouse://default:@10.0.0.102:9000/mydb
+SSH: ssh://myserver
+```
+
+**Using SSH key:**
+```
+DSN: clickhouse://default:password@10.0.0.102:9000/mydb
+SSH: ssh://admin@jump.example.com?key=~/.ssh/id_rsa
+```
+
+> **Note:** The DSN host:port should be accessible from the SSH server (e.g., internal IP).
+
 ## Tips
 
 1. **Port**: ClickHouse native protocol uses port 9000 (not 8123 for HTTP)

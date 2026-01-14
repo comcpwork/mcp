@@ -80,6 +80,41 @@ Query OK, 1 row affected
 Last Insert ID: 42
 ```
 
+## SSH Connection
+
+Connect to MySQL through SSH bastion host using the optional `ssh` parameter.
+
+### SSH URI Formats
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| Config reference | `ssh://myserver` | Use `~/.ssh/config` entry |
+| Password auth | `ssh://user:pass@host:port` | Direct password authentication |
+| Key auth | `ssh://user@host?key=/path/to/key` | Private key authentication |
+| Key with passphrase | `ssh://user@host?key=/path/to/key&passphrase=xxx` | Encrypted private key |
+
+### Examples
+
+**Using SSH config:**
+```
+DSN: root:password@tcp(10.0.0.100:3306)/mydb
+SSH: ssh://myserver
+```
+
+**Using SSH key:**
+```
+DSN: root:password@tcp(10.0.0.100:3306)/mydb
+SSH: ssh://admin@jump.example.com?key=~/.ssh/id_rsa
+```
+
+**Using SSH password:**
+```
+DSN: root:password@tcp(10.0.0.100:3306)/mydb
+SSH: ssh://admin:sshpass@jump.example.com:2222
+```
+
+> **Note:** The DSN host:port should be accessible from the SSH server (e.g., internal IP).
+
 ## Tips
 
 1. **DSN Security**: Never expose DSN with sensitive credentials in logs or shared environments

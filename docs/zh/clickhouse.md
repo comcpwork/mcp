@@ -100,6 +100,34 @@ Row 1:
 Query OK, 1 row affected
 ```
 
+## SSH 连接
+
+通过可选的 `ssh` 参数，使用 SSH 跳板机连接 ClickHouse。
+
+### SSH URI 格式
+
+| 格式 | 示例 | 说明 |
+|------|------|------|
+| 配置引用 | `ssh://myserver` | 使用 `~/.ssh/config` 中的配置 |
+| 密码认证 | `ssh://user:pass@host:port` | 直接密码认证 |
+| 密钥认证 | `ssh://user@host?key=/path/to/key` | 私钥认证 |
+
+### 示例
+
+**使用 SSH 配置：**
+```
+DSN: clickhouse://default:@10.0.0.102:9000/mydb
+SSH: ssh://myserver
+```
+
+**使用 SSH 密钥：**
+```
+DSN: clickhouse://default:password@10.0.0.102:9000/mydb
+SSH: ssh://admin@jump.example.com?key=~/.ssh/id_rsa
+```
+
+> **注意：** DSN 中的 host:port 应该是从 SSH 服务器可访问的地址（如内网 IP）。
+
 ## 使用技巧
 
 1. **端口**: ClickHouse 原生协议使用端口 9000（不是 HTTP 的 8123）

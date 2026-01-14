@@ -138,6 +138,43 @@ CREATE TABLE orders (
 );
 ```
 
+## SSH 远程执行
+
+与其他使用 TCP 隧道的数据库工具不同，SQLite 在启用 SSH 时使用**远程命令执行**模式。这意味着：
+
+- 远程服务器必须安装 `sqlite3` 命令行工具
+- 命令通过 SSH 直接在远程服务器上执行
+- 输出使用 sqlite3 的原生格式（本工具不做格式化）
+
+### SSH URI 格式
+
+| 格式 | 示例 | 说明 |
+|------|------|------|
+| 配置引用 | `ssh://myserver` | 使用 `~/.ssh/config` 中的配置 |
+| 密码认证 | `ssh://user:pass@host:port` | 直接密码认证 |
+| 密钥认证 | `ssh://user@host?key=/path/to/key` | 私钥认证 |
+
+### 示例
+
+**使用 SSH 配置：**
+```
+DSN: /data/app.db
+SSH: ssh://myserver
+```
+
+**使用 SSH 密钥：**
+```
+DSN: /home/deploy/mydb.db
+SSH: ssh://admin@server.example.com?key=~/.ssh/id_rsa
+```
+
+### 重要说明
+
+1. **需要远程 sqlite3**: 远程服务器必须安装 `sqlite3`
+2. **DSN 是远程路径**: DSN 应该是远程服务器上的路径
+3. **输出格式**: 结果使用 sqlite3 的原生格式（非本地模式的格式化输出）
+4. **不支持 :memory:**: 内存数据库不能与 SSH 一起使用
+
 ## 使用技巧
 
 1. **内存 vs 文件**: 测试使用 `:memory:`，持久化使用文件路径

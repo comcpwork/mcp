@@ -24,7 +24,13 @@ func handleSQLiteExec(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallTo
 		return mcp.NewToolResultError("Missing sql parameter"), nil
 	}
 
-	// 打开数据库连接
+	// 检查是否需要SSH远程执行
+	sshURI := req.GetString("ssh", "")
+	if sshURI != "" {
+		return handleSQLiteSSHExec(ctx, sshURI, dsn, sqlQuery)
+	}
+
+	// 本地模式：打开数据库连接
 	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("Database connection failed: %v", err)), nil
@@ -41,6 +47,46 @@ func handleSQLiteExec(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallTo
 		return executeSQLiteQuery(ctx, db, sqlQuery)
 	}
 	return executeSQLiteModification(ctx, db, sqlQuery)
+}
+
+// handleSQLiteSSHExec 通过SSH远程执行sqlite3命令
+func handleSQLiteSSHExec(ctx context.Context, sshURI, dbPath, sqlQuery string) (*mcp.CallToolResult, error) {
+	sshConfig, err := ParseSSHURI(sshURI)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Invalid SSH URI: %v", err)), nil
+	}
+
+	// 建立SSH连接
+	client, err := NewSSHClient(sshConfig)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("SSH connection failed: %v", err)), nil
+	}
+	defer client.Close()
+
+	// 构建sqlite3命令（使用-header -column格式输出）
+	// 转义单引号防止命令注入
+	escapedPath := strings.ReplaceAll(dbPath, "'", "'\\''")
+	escapedSQL := strings.ReplaceAll(sqlQuery, "'", "'\\''")
+	cmd := fmt.Sprintf("sqlite3 -header -column '%s' '%s'", escapedPath, escapedSQL)
+
+	// 执行远程命令
+	output, err := client.RunWithContext(ctx, cmd)
+	if err != nil {
+		errStr := err.Error()
+		// 检查是否是sqlite3不存在
+		if strings.Contains(errStr, "not found") ||
+			strings.Contains(errStr, "command not found") ||
+			strings.Contains(errStr, "No such file or directory") {
+			return mcp.NewToolResultError("sqlite3 command not found on remote server"), nil
+		}
+		return mcp.NewToolResultError(fmt.Sprintf("Remote execution failed: %v", err)), nil
+	}
+
+	// 原样返回输出，不做格式化
+	if output == "" {
+		output = "Query executed successfully (no output)"
+	}
+	return mcp.NewToolResultText(output), nil
 }
 
 // executeSQLiteQuery 执行查询操作

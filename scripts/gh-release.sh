@@ -60,11 +60,11 @@ NOTES=$(cat <<EOF
 
 \`\`\`bash
 # Linux/macOS
-chmod +x mcp-*
-sudo mv mcp-* /usr/local/bin/mcp
+chmod +x cowork-database-*
+sudo mv cowork-database-* /usr/local/bin/cowork-database
 
 # 验证
-mcp --version
+cowork-database --version
 \`\`\`
 
 ### 📚 文档
@@ -78,11 +78,11 @@ echo "创建 Release..."
 gh release create $VERSION \
     --title "MCP $VERSION" \
     --notes "$NOTES" \
-    dist/mcp-linux-amd64 \
-    dist/mcp-linux-arm64 \
-    dist/mcp-darwin-amd64 \
-    dist/mcp-darwin-arm64 \
-    dist/mcp-windows-amd64.exe
+    dist/cowork-database-linux-amd64 \
+    dist/cowork-database-linux-arm64 \
+    dist/cowork-database-darwin-amd64 \
+    dist/cowork-database-darwin-arm64 \
+    dist/cowork-database-windows-amd64.exe
 
 echo -e "\n${GREEN}✓ Release 发布成功！${NC}"
 echo -e "查看: https://github.com/comcpwork/mcp/releases/tag/$VERSION"

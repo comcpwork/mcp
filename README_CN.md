@@ -10,6 +10,7 @@
 - **Redis** - 执行 Redis 命令
 - **ClickHouse** - 执行 ClickHouse SQL 语句
 - **SQLite** - 执行 SQLite SQL（文件数据库或内存数据库）
+- **SSH 隧道** - 通过 SSH 跳板机连接数据库
 
 ## 安装
 
@@ -21,7 +22,7 @@
 ### 步骤 1：安装工具
 
 ```bash
-go install github.com/comcpwork/mcp/cmd/mcp@latest
+go install github.com/comcpwork/mcp/cmd/cowork-database@latest
 ```
 
 ### 步骤 2：配置 MCP 客户端
@@ -31,7 +32,7 @@ go install github.com/comcpwork/mcp/cmd/mcp@latest
 添加 MCP 服务器：
 
 ```bash
-claude mcp add database -- mcp database
+claude mcp add database -- cowork-database database
 ```
 
 #### Cursor / Cline / 其他 MCP 客户端
@@ -42,7 +43,7 @@ claude mcp add database -- mcp database
 {
   "mcpServers": {
     "database": {
-      "command": "mcp",
+      "command": "cowork-database",
       "args": ["database"]
     }
   }
@@ -76,6 +77,30 @@ claude mcp add database -- mcp database
 | Redis | `redis://[:password@]host:port/db` | `redis://localhost:6379/0` |
 | ClickHouse | `clickhouse://user:pass@host:port/db` | `clickhouse://default:@localhost:9000/default` |
 | SQLite | `/path/to/file.db` 或 `:memory:` | `/data/mydb.db` 或 `:memory:` |
+
+## SSH 连接
+
+所有工具都支持通过 `ssh` 参数进行可选的 SSH 隧道连接。
+
+### SSH URI 格式
+
+| 格式 | 示例 | 说明 |
+|------|------|------|
+| 配置引用 | `ssh://myserver` | 使用 `~/.ssh/config` 中的配置 |
+| 密码认证 | `ssh://user:pass@host:port` | 直接密码认证 |
+| 密钥认证 | `ssh://user@host?key=/path/to/key` | 私钥认证 |
+
+### 示例
+
+```json
+{
+  "dsn": "root:password@tcp(10.0.0.100:3306)/mydb",
+  "sql": "SELECT * FROM users",
+  "ssh": "ssh://admin@jump.example.com?key=~/.ssh/id_rsa"
+}
+```
+
+> **注意：** SQLite 使用远程命令执行模式（需要远程服务器安装 `sqlite3`）。
 
 ## 文档
 

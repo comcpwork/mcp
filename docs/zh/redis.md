@@ -114,6 +114,34 @@ status: active
 | `SADD` | 添加到集合 | `SADD set member` |
 | `SMEMBERS` | 获取集合所有成员 | `SMEMBERS set` |
 
+## SSH 连接
+
+通过可选的 `ssh` 参数，使用 SSH 跳板机连接 Redis。
+
+### SSH URI 格式
+
+| 格式 | 示例 | 说明 |
+|------|------|------|
+| 配置引用 | `ssh://myserver` | 使用 `~/.ssh/config` 中的配置 |
+| 密码认证 | `ssh://user:pass@host:port` | 直接密码认证 |
+| 密钥认证 | `ssh://user@host?key=/path/to/key` | 私钥认证 |
+
+### 示例
+
+**使用 SSH 配置：**
+```
+DSN: redis://:password@10.0.0.101:6379/0
+SSH: ssh://myserver
+```
+
+**使用 SSH 密钥：**
+```
+DSN: redis://:password@10.0.0.101:6379/0
+SSH: ssh://admin@jump.example.com?key=~/.ssh/id_rsa
+```
+
+> **注意：** DSN 中的 host:port 应该是从 SSH 服务器可访问的地址（如内网 IP）。
+
 ## 使用技巧
 
 1. **数据库选择**: Redis 有 16 个数据库（0-15），在 DSN 路径中指定

@@ -10,13 +10,13 @@
 ### 快速安装
 
 ```bash
-go install github.com/comcpwork/mcp/cmd/mcp@latest
+go install github.com/comcpwork/mcp/cmd/cowork-database@latest
 ```
 
 ### 验证安装
 
 ```bash
-mcp --version
+cowork-database --version
 ```
 
 ## 配置
@@ -26,7 +26,7 @@ mcp --version
 直接添加 MCP 服务器：
 
 ```bash
-claude mcp add database -- mcp database
+claude mcp add database -- cowork-database database
 ```
 
 ### Claude Desktop（macOS/Windows）
@@ -39,7 +39,7 @@ claude mcp add database -- mcp database
 {
   "mcpServers": {
     "database": {
-      "command": "mcp",
+      "command": "cowork-database",
       "args": ["database"]
     }
   }
@@ -53,7 +53,7 @@ claude mcp add database -- mcp database
 ```json
 {
   "database": {
-    "command": "mcp",
+    "command": "cowork-database",
     "args": ["database"]
   }
 }
@@ -67,7 +67,7 @@ claude mcp add database -- mcp database
 {
   "mcpServers": {
     "database": {
-      "command": "mcp",
+      "command": "cowork-database",
       "args": ["database"]
     }
   }
@@ -100,17 +100,17 @@ export PATH="$HOME/go/bin:$PATH"
 ### 权限被拒绝
 
 ```bash
-chmod +x ~/go/bin/mcp
+chmod +x ~/go/bin/cowork-database
 ```
 
 ### MCP 客户端未检测到工具
 
 1. 配置后重启 MCP 客户端
-2. 确认 `mcp` 命令在客户端环境中可访问
+2. 确认 `cowork-database` 命令在客户端环境中可访问
 3. 检查配置文件语法（有效的 JSON）
 
 ## 卸载
 
 ```bash
-rm ~/go/bin/mcp
+rm ~/go/bin/cowork-database
 ```

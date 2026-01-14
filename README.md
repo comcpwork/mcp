@@ -10,6 +10,7 @@ Execute MySQL, Redis, ClickHouse and SQLite commands through natural language co
 - **Redis** - Execute Redis commands
 - **ClickHouse** - Execute ClickHouse SQL statements
 - **SQLite** - Execute SQLite SQL (file-based or in-memory)
+- **SSH Tunneling** - Connect to databases through SSH bastion hosts
 
 ## Installation
 
@@ -21,7 +22,7 @@ Execute MySQL, Redis, ClickHouse and SQLite commands through natural language co
 ### Step 1: Install the Tool
 
 ```bash
-go install github.com/comcpwork/mcp/cmd/mcp@latest
+go install github.com/comcpwork/mcp/cmd/cowork-database@latest
 ```
 
 ### Step 2: Configure Your MCP Client
@@ -31,7 +32,7 @@ go install github.com/comcpwork/mcp/cmd/mcp@latest
 Add the MCP server:
 
 ```bash
-claude mcp add database -- mcp database
+claude mcp add database -- cowork-database database
 ```
 
 #### Cursor / Cline / Other MCP Clients
@@ -42,7 +43,7 @@ Add to your MCP configuration file:
 {
   "mcpServers": {
     "database": {
-      "command": "mcp",
+      "command": "cowork-database",
       "args": ["database"]
     }
   }
@@ -76,6 +77,30 @@ Ask your AI assistant:
 | Redis | `redis://[:password@]host:port/db` | `redis://localhost:6379/0` |
 | ClickHouse | `clickhouse://user:pass@host:port/db` | `clickhouse://default:@localhost:9000/default` |
 | SQLite | `/path/to/file.db` or `:memory:` | `/data/mydb.db` or `:memory:` |
+
+## SSH Connection
+
+All tools support optional SSH tunneling through the `ssh` parameter.
+
+### SSH URI Formats
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| Config reference | `ssh://myserver` | Use `~/.ssh/config` entry |
+| Password auth | `ssh://user:pass@host:port` | Direct password authentication |
+| Key auth | `ssh://user@host?key=/path/to/key` | Private key authentication |
+
+### Example
+
+```json
+{
+  "dsn": "root:password@tcp(10.0.0.100:3306)/mydb",
+  "sql": "SELECT * FROM users",
+  "ssh": "ssh://admin@jump.example.com?key=~/.ssh/id_rsa"
+}
+```
+
+> **Note:** SQLite uses remote command execution mode (requires `sqlite3` on remote server).
 
 ## Documentation
 

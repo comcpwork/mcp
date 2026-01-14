@@ -114,6 +114,34 @@ status: active
 | `SADD` | Add to set | `SADD set member` |
 | `SMEMBERS` | Get all set members | `SMEMBERS set` |
 
+## SSH Connection
+
+Connect to Redis through SSH bastion host using the optional `ssh` parameter.
+
+### SSH URI Formats
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| Config reference | `ssh://myserver` | Use `~/.ssh/config` entry |
+| Password auth | `ssh://user:pass@host:port` | Direct password authentication |
+| Key auth | `ssh://user@host?key=/path/to/key` | Private key authentication |
+
+### Examples
+
+**Using SSH config:**
+```
+DSN: redis://:password@10.0.0.101:6379/0
+SSH: ssh://myserver
+```
+
+**Using SSH key:**
+```
+DSN: redis://:password@10.0.0.101:6379/0
+SSH: ssh://admin@jump.example.com?key=~/.ssh/id_rsa
+```
+
+> **Note:** The DSN host:port should be accessible from the SSH server (e.g., internal IP).
+
 ## Tips
 
 1. **Database Selection**: Redis has 16 databases (0-15), specify in DSN path

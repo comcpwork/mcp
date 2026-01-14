@@ -1,7 +1,7 @@
 # MCP Windows 安装脚本
 
 param(
-    [string]$InstallDir = "$env:LOCALAPPDATA\MCP",
+    [string]$InstallDir = "$env:LOCALAPPDATA\CoworkDatabase",
     [switch]$AddToPath = $true
 )
 
@@ -34,7 +34,7 @@ try {
 }
 
 # 构建下载URL
-$binaryFile = "mcp-windows-$arch.exe"
+$binaryFile = "cowork-database-windows-$arch.exe"
 $downloadUrl = "https://github.com/comcpwork/mcp/releases/download/$version/$binaryFile"
 
 # 创建安装目录
@@ -44,7 +44,7 @@ if (!(Test-Path $InstallDir)) {
 }
 
 # 下载文件
-$tempFile = Join-Path $env:TEMP "mcp.exe"
+$tempFile = Join-Path $env:TEMP "cowork-database.exe"
 Write-ColorOutput Yellow "下载 MCP..."
 Write-Output "URL: $downloadUrl"
 
@@ -59,7 +59,7 @@ try {
 }
 
 # 复制到安装目录
-$targetFile = Join-Path $InstallDir "mcp.exe"
+$targetFile = Join-Path $InstallDir "cowork-database.exe"
 Write-ColorOutput Yellow "安装 MCP..."
 try {
     Copy-Item $tempFile $targetFile -Force
@@ -118,17 +118,9 @@ Write-Output "添加以下配置："
 Write-Output @"
 {
   "mcpServers": {
-    "mysql": {
+    "database": {
       "command": "$targetFile",
-      "args": ["mysql"]
-    },
-    "redis": {
-      "command": "$targetFile",
-      "args": ["redis"]
-    },
-    "pulsar": {
-      "command": "$targetFile",
-      "args": ["pulsar"]
+      "args": ["database"]
     }
   }
 }

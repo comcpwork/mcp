@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"mcp/database"
 	"os"
 
-	"github.com/spf13/cobra"
+	"cowork-database/database"
+
 	mcpserver "github.com/mark3labs/mcp-go/server"
+	"github.com/spf13/cobra"
 )
 
 var version = "1.0.4"
@@ -14,9 +15,9 @@ var version = "1.0.4"
 func main() {
 	// 创建根命令
 	rootCmd := &cobra.Command{
-		Use:     "mcp",
-		Short:   "MCP Database Tools",
-		Long:    "MCP (Model Context Protocol) Database Tools - Execute MySQL, Redis, ClickHouse and SQLite commands through AI assistants",
+		Use:     "cowork-database",
+		Short:   "Cowork Database Tools",
+		Long:    "Cowork Database Tools (MCP Server) - Execute MySQL, Redis, ClickHouse and SQLite commands through AI assistants",
 		Version: version,
 	}
 

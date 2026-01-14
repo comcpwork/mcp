@@ -13,6 +13,12 @@ func NewServer() *mcpserver.MCPServer {
 		mcpserver.WithToolCapabilities(true),
 	)
 
+	// SSH参数描述（供复用）
+	sshDescription := "SSH tunnel URI for connecting through bastion host. " +
+		"Format 1: ssh://config-name (use ~/.ssh/config). " +
+		"Format 2: ssh://user[:password]@host[:port][?key=/path/to/key&passphrase=xxx]. " +
+		"Example: ssh://myserver or ssh://admin@jump.example.com?key=~/.ssh/id_rsa"
+
 	// 注册 MySQL 工具
 	server.AddTool(
 		mcp.NewTool("mysql_exec",
@@ -35,6 +41,9 @@ func NewServer() *mcpserver.MCPServer {
 					"SQL statement to execute. "+
 						"For SELECT queries without LIMIT clause, all rows will be returned.",
 				),
+			),
+			mcp.WithString("ssh",
+				mcp.Description(sshDescription),
 			),
 		),
 		handleMySQLExec,
@@ -63,6 +72,9 @@ func NewServer() *mcpserver.MCPServer {
 						"Example: GET key, SET key value, HGETALL myhash, LPUSH mylist value",
 				),
 			),
+			mcp.WithString("ssh",
+				mcp.Description(sshDescription),
+			),
 		),
 		handleRedisExec,
 	)
@@ -90,23 +102,35 @@ func NewServer() *mcpserver.MCPServer {
 						"For SELECT queries without LIMIT clause, all rows will be returned.",
 				),
 			),
+			mcp.WithString("ssh",
+				mcp.Description(sshDescription),
+			),
 		),
 		handleClickHouseExec,
 	)
+
+	// SQLite SSH参数描述（特殊说明远程命令执行模式）
+	sqliteSSHDescription := "SSH connection for remote sqlite3 command execution. " +
+		"When SSH is provided, the tool executes sqlite3 command on remote server (requires sqlite3 installed). " +
+		"Format 1: ssh://config-name (use ~/.ssh/config). " +
+		"Format 2: ssh://user[:password]@host[:port][?key=/path/to/key&passphrase=xxx]. " +
+		"Example: ssh://myserver or ssh://admin@server.example.com?key=~/.ssh/id_rsa"
 
 	// 注册 SQLite 工具
 	server.AddTool(
 		mcp.NewTool("sqlite_exec",
 			mcp.WithDescription(
-				"Execute SQLite SQL statements using SQLite driver DSN. "+
-					"Supports SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, etc. "+
+				"Execute SQLite SQL statements. "+
+					"Local mode: uses SQLite driver directly. "+
+					"SSH mode: executes sqlite3 command on remote server (requires sqlite3 installed). "+
 					"Note: If no LIMIT is specified in your SELECT query, all matching rows will be returned.",
 			),
 			mcp.WithString("dsn",
 				mcp.Required(),
 				mcp.Description(
 					"SQLite database file path or :memory: for in-memory database. "+
-						"Format: /path/to/database.db or :memory:. "+
+						"For local: /path/to/database.db or :memory:. "+
+						"For SSH: remote file path like /data/mydb.db. "+
 						"Example: /Users/<username>/data/mydb.db or :memory:",
 				),
 			),
@@ -116,6 +140,9 @@ func NewServer() *mcpserver.MCPServer {
 					"SQL statement to execute. "+
 						"For SELECT queries without LIMIT clause, all rows will be returned.",
 				),
+			),
+			mcp.WithString("ssh",
+				mcp.Description(sqliteSSHDescription),
 			),
 		),
 		handleSQLiteExec,
