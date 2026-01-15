@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"sort"
@@ -61,14 +62,26 @@ func handlePrometheusExec(ctx context.Context, req mcp.CallToolRequest) (*mcp.Ca
 		return mcp.NewToolResultError(fmt.Sprintf("Invalid DSN: %v", err)), nil
 	}
 
+	// 创建带超时的 HTTP 客户端
+	httpClient := &http.Client{
+		Timeout: 30 * time.Second,
+		Transport: &http.Transport{
+			DialContext:           (&net.Dialer{Timeout: 10 * time.Second}).DialContext,
+			ResponseHeaderTimeout: 30 * time.Second,
+			IdleConnTimeout:       90 * time.Second,
+		},
+	}
+
 	// 创建 Prometheus API 客户端
 	config := api.Config{
-		Address: addr,
+		Address:      addr,
+		RoundTripper: httpClient.Transport,
 	}
 	if basicAuth != nil {
 		config.RoundTripper = &basicAuthRoundTripper{
-			username: basicAuth.username,
-			password: basicAuth.password,
+			username:  basicAuth.username,
+			password:  basicAuth.password,
+			transport: httpClient.Transport,
 		}
 	}
 
@@ -78,6 +91,10 @@ func handlePrometheusExec(ctx context.Context, req mcp.CallToolRequest) (*mcp.Ca
 	}
 
 	apiClient := v1.NewAPI(client)
+
+	// 添加超时控制
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
 
 	// 解析 Query，分离命令和过滤器
 	command, filter := parsePrometheusQuery(query)
@@ -102,13 +119,20 @@ type basicAuthInfo struct {
 
 // basicAuthRoundTripper 添加基本认证的 RoundTripper
 type basicAuthRoundTripper struct {
-	username string
-	password string
+	username  string
+	password  string
+	transport http.RoundTripper
 }
 
 func (rt *basicAuthRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.SetBasicAuth(rt.username, rt.password)
-	return http.DefaultTransport.RoundTrip(req)
+	// 克隆请求以避免修改原始请求
+	req2 := req.Clone(req.Context())
+	req2.SetBasicAuth(rt.username, rt.password)
+	transport := rt.transport
+	if transport == nil {
+		transport = http.DefaultTransport
+	}
+	return transport.RoundTrip(req2)
 }
 
 // parsePrometheusDSN 解析 Prometheus DSN
