@@ -316,6 +316,29 @@ func (t *PooledSSHTunnel) Close() error {
 	return nil
 }
 
+// dialWithTimeout 带超时的 SSH Dial
+func (t *PooledSSHTunnel) dialWithTimeout(network, addr string, timeout time.Duration) (net.Conn, error) {
+	type dialResult struct {
+		conn net.Conn
+		err  error
+	}
+
+	result := make(chan dialResult, 1)
+	go func() {
+		conn, err := t.client.Dial(network, addr)
+		result <- dialResult{conn, err}
+	}()
+
+	select {
+	case r := <-result:
+		return r.conn, r.err
+	case <-time.After(timeout):
+		return nil, fmt.Errorf("dial timeout after %v", timeout)
+	case <-t.done:
+		return nil, fmt.Errorf("tunnel closed")
+	}
+}
+
 // forward 转发连接
 func (t *PooledSSHTunnel) forward() {
 	defer t.wg.Done()
@@ -345,8 +368,8 @@ func (t *PooledSSHTunnel) forward() {
 			}
 		}
 
-		// 建立到远程的连接
-		remoteConn, err := t.client.Dial("tcp", t.remoteAddr)
+		// 建立到远程的连接（带超时）
+		remoteConn, err := t.dialWithTimeout("tcp", t.remoteAddr, 30*time.Second)
 		if err != nil {
 			localConn.Close()
 			continue
