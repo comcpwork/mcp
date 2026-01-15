@@ -351,8 +351,9 @@ func (t *PooledSSHTunnel) forward() {
 		}
 
 		// 设置accept超时，以便能够响应关闭信号
+		// 使用较短的超时以减少延迟
 		if tcpListener, ok := t.listener.(*net.TCPListener); ok {
-			tcpListener.SetDeadline(time.Now().Add(time.Second))
+			tcpListener.SetDeadline(time.Now().Add(100 * time.Millisecond))
 		}
 
 		localConn, err := t.listener.Accept()
