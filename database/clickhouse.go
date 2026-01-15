@@ -26,22 +26,17 @@ func handleClickHouseExec(ctx context.Context, req mcp.CallToolRequest) (*mcp.Ca
 
 	// 检查是否需要SSH隧道
 	sshURI := req.GetString("ssh", "")
-	var tunnel *SSHTunnel
+	var tunnel *PooledSSHTunnel
 	if sshURI != "" {
-		sshConfig, err := ParseSSHURI(sshURI)
-		if err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("Invalid SSH URI: %v", err)), nil
-		}
-
 		// 从DSN中提取目标地址
 		remoteHost, remotePort, err := ExtractClickHouseHostPort(dsn)
 		if err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("Failed to parse DSN: %v", err)), nil
 		}
 
-		// 建立SSH隧道
-		tunnel = NewSSHTunnel(sshConfig)
-		if err := tunnel.Start(remoteHost, remotePort); err != nil {
+		// 从连接池获取SSH隧道
+		tunnel, err = GetSSHPool().GetTunnel(sshURI, remoteHost, remotePort)
+		if err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("SSH tunnel failed: %v", err)), nil
 		}
 		defer tunnel.Close()

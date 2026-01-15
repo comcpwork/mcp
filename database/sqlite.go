@@ -51,13 +51,8 @@ func handleSQLiteExec(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallTo
 
 // handleSQLiteSSHExec 通过SSH远程执行sqlite3命令
 func handleSQLiteSSHExec(ctx context.Context, sshURI, dbPath, sqlQuery string) (*mcp.CallToolResult, error) {
-	sshConfig, err := ParseSSHURI(sshURI)
-	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("Invalid SSH URI: %v", err)), nil
-	}
-
-	// 建立SSH连接
-	client, err := NewSSHClient(sshConfig)
+	// 从连接池获取SSH客户端
+	client, err := GetSSHPool().GetSSHExecClient(sshURI)
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("SSH connection failed: %v", err)), nil
 	}

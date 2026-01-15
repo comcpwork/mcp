@@ -148,5 +148,64 @@ func NewServer() *mcpserver.MCPServer {
 		handleSQLiteExec,
 	)
 
+	// 注册 Prometheus 工具
+	server.AddTool(
+		mcp.NewTool("prometheus_exec",
+			mcp.WithDescription(
+				"Query Prometheus metrics using PromQL or built-in commands. "+
+					"Built-in commands (support match filter): "+
+					"SHOW METRICS - list all metric names; "+
+					"SHOW LABELS - list all label names; "+
+					"SHOW LABEL VALUES <label> - get all values for a label; "+
+					"DESCRIBE <metric> - get metric metadata (type, help). "+
+					"PromQL queries are also supported for instant and range queries (no match filter). "+
+					"Match filter (built-in commands only): append '| {selector}' to filter by PromQL selector. "+
+					"Example: 'SHOW METRICS | {job=\"prometheus\"}'.",
+			),
+			mcp.WithString("dsn",
+				mcp.Required(),
+				mcp.Description(
+					"Prometheus server address. "+
+						"Format: prometheus://[user:pass@]host:port. "+
+						"Example: prometheus://localhost:9090 or prometheus://admin:secret@prometheus.example.com:9090",
+				),
+			),
+			mcp.WithString("query",
+				mcp.Required(),
+				mcp.Description(
+					"Query expression: built-in command or PromQL. "+
+						"Built-in commands (support '| {selector}' match filter): SHOW METRICS, SHOW LABELS, SHOW LABEL VALUES <label>, DESCRIBE <metric>. "+
+						"PromQL (no match filter): any valid PromQL like 'up', 'rate(http_requests_total[5m])'. "+
+						"Examples: 'SHOW METRICS | {job=\"prometheus\"}', 'SHOW LABEL VALUES job', 'up'.",
+				),
+			),
+			mcp.WithString("start",
+				mcp.Description(
+					"Range query start time in RFC3339 format. "+
+						"Required for range queries along with 'end' and 'step'. "+
+						"Example: 2024-01-14T09:00:00Z",
+				),
+			),
+			mcp.WithString("end",
+				mcp.Description(
+					"Range query end time in RFC3339 format. "+
+						"Required for range queries along with 'start' and 'step'. "+
+						"Example: 2024-01-14T10:00:00Z",
+				),
+			),
+			mcp.WithString("step",
+				mcp.Description(
+					"Range query step duration. "+
+						"Required for range queries along with 'start' and 'end'. "+
+						"Example: 1m, 5m, 1h",
+				),
+			),
+			mcp.WithString("ssh",
+				mcp.Description(sshDescription),
+			),
+		),
+		handlePrometheusExec,
+	)
+
 	return server
 }
