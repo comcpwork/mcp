@@ -143,62 +143,57 @@ func formatClickHouseQueryResult(columns []string, results []map[string]interfac
 	var output strings.Builder
 
 	output.WriteString(fmt.Sprintf("Query: %s\n", sqlQuery))
-	output.WriteString(fmt.Sprintf("Result: %d rows x %d columns\n\n", len(results), len(columns)))
+	output.WriteString(fmt.Sprintf("Result: %d rows x %d columns\n", len(results), len(columns)))
 
 	if len(results) == 0 {
 		output.WriteString("No data\n")
 		return output.String()
 	}
 
-	// 表格形式显示（最多5列）
-	if len(columns) <= 5 {
-		// 计算列宽
-		colWidths := make([]int, len(columns))
-		for i, col := range columns {
-			colWidths[i] = len(col)
+	// 输出列名（数组格式）
+	output.WriteString("Columns: [")
+	for i, col := range columns {
+		if i > 0 {
+			output.WriteString(", ")
 		}
+		output.WriteString(fmt.Sprintf("%q", col))
+	}
+	output.WriteString("]\n\n")
 
-		for _, row := range results {
-			for j, col := range columns {
-				val := fmt.Sprintf("%v", row[col])
-				if len(val) > colWidths[j] {
-					colWidths[j] = len(val)
-				}
+	// 输出数据行（数组格式）
+	for _, row := range results {
+		output.WriteString("[")
+		for j, col := range columns {
+			if j > 0 {
+				output.WriteString(", ")
 			}
+			output.WriteString(formatClickHouseValue(row[col]))
 		}
-
-		// 表头
-		for i, col := range columns {
-			output.WriteString(fmt.Sprintf("%-*s", colWidths[i]+2, col))
-		}
-		output.WriteString("\n")
-
-		// 分隔线
-		for i := range columns {
-			output.WriteString(strings.Repeat("-", colWidths[i]+2))
-		}
-		output.WriteString("\n")
-
-		// 数据行
-		for _, row := range results {
-			for j, col := range columns {
-				val := fmt.Sprintf("%v", row[col])
-				output.WriteString(fmt.Sprintf("%-*s", colWidths[j]+2, val))
-			}
-			output.WriteString("\n")
-		}
-	} else {
-		// 列数较多时使用键值对形式
-		for i, row := range results {
-			output.WriteString(fmt.Sprintf("--- Row %d ---\n", i+1))
-			for _, col := range columns {
-				output.WriteString(fmt.Sprintf("%s: %v\n", col, row[col]))
-			}
-			output.WriteString("\n")
-		}
+		output.WriteString("]\n")
 	}
 
 	return output.String()
+}
+
+// formatClickHouseValue 格式化单个值为紧凑格式
+func formatClickHouseValue(v interface{}) string {
+	if v == nil {
+		return "null"
+	}
+	switch val := v.(type) {
+	case string:
+		return fmt.Sprintf("%q", val)
+	case []byte:
+		return fmt.Sprintf("%q", string(val))
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+		return fmt.Sprintf("%d", val)
+	case float32, float64:
+		return fmt.Sprintf("%v", val)
+	case bool:
+		return fmt.Sprintf("%t", val)
+	default:
+		return fmt.Sprintf("%q", fmt.Sprintf("%v", val))
+	}
 }
 
 // formatClickHouseModificationResult 格式化修改操作结果
