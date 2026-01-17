@@ -168,9 +168,9 @@ func formatSQLiteQueryResult(columns []string, results []map[string]interface{},
 		}
 		output.WriteString(fmt.Sprintf("%q", col))
 	}
-	output.WriteString("]\n\n")
+	output.WriteString("]\n")
 
-	// 输出数据行（数组格式）
+	// 输出数据行（数组格式，每行带逗号）
 	for _, row := range results {
 		output.WriteString("[")
 		for j, col := range columns {
@@ -179,7 +179,7 @@ func formatSQLiteQueryResult(columns []string, results []map[string]interface{},
 			}
 			output.WriteString(formatSQLiteValue(row[col]))
 		}
-		output.WriteString("]\n")
+		output.WriteString("],\n")
 	}
 
 	return output.String()
