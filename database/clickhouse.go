@@ -150,26 +150,25 @@ func formatClickHouseQueryResult(columns []string, results []map[string]interfac
 		return output.String()
 	}
 
-	// 输出列名（数组格式）
-	output.WriteString("Columns: [")
+	// 输出表头（Table格式）
+	output.WriteString("Table(")
 	for i, col := range columns {
 		if i > 0 {
 			output.WriteString(", ")
 		}
-		output.WriteString(fmt.Sprintf("%q", col))
+		output.WriteString(col)
 	}
-	output.WriteString("]\n")
+	output.WriteString(")\n")
 
-	// 输出数据行（数组格式，每行带逗号）
+	// 输出数据行（逗号分隔，行尾带逗号）
 	for _, row := range results {
-		output.WriteString("[")
 		for j, col := range columns {
 			if j > 0 {
 				output.WriteString(", ")
 			}
 			output.WriteString(formatClickHouseValue(row[col]))
 		}
-		output.WriteString("],\n")
+		output.WriteString(",\n")
 	}
 
 	return output.String()
